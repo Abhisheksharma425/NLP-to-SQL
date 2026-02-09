@@ -19,8 +19,8 @@ def schema_linker_node(state: SQLState) -> Dict:
     """
     settings = get_settings()
     
-    # Initialize schema tools
-    extractor = SchemaExtractor(settings.database_url)
+    # Initialize schema tools (disable Phase 1 LLM descriptions for clean Phase 2 test)
+    extractor = SchemaExtractor(settings.database_url, use_llm_descriptions=False)
     linker = SchemaLinker(extractor)
     
     # Find relevant tables (top 3)

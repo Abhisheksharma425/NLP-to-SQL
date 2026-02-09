@@ -28,16 +28,41 @@ EXAMPLE FORMAT:
 - Sample values like "Taylor Swift", "Lady Gaga" → clearly person names"""
 
 
-def create_sql_generation_prompt(question: str, schema: str, examples: List[Dict[str, str]] = None) -> str:
-    """Create prompt for SQL generation."""
+def create_sql_generation_prompt(question: str, schema: str, examples: List[Dict[str, str]] = None, use_patterns: bool = True) -> str:
+    """Create prompt for SQL generation.
+    
+    Args:
+        question: Natural language question
+        schema: Database schema (DDL)
+        examples: Optional traditional examples (deprecated)
+        use_patterns: Whether to include generic pattern guidance (recommended)
+    """
+    from .patterns import get_relevant_patterns
     
     prompt_parts = [SYSTEM_PROMPT]
+    
+    # Add generic pattern guidance (NEW!)
+    if use_patterns:
+        patterns = get_relevant_patterns(question)
+        if patterns:
+            prompt_parts.append("\n\nSQL GENERATION PATTERNS (Follow These!):")
+            prompt_parts.append("=" * 60)
+            
+            for pattern in patterns[:4]:  # Limit to top 4 most relevant
+                prompt_parts.append(f"\n## {pattern['name']}")
+                prompt_parts.append(f"Rule: {pattern['rule']}")
+                
+                if pattern.get('examples'):
+                    for ex in pattern['examples'][:2]:  # Max 2 examples per pattern
+                        prompt_parts.append(f"  Example: \"{ex['pattern']}\"")
+                        prompt_parts.append(f"  → {ex['guidance']}")
+                        prompt_parts.append(f"  ({ex['note']})")
     
     # Add schema
     prompt_parts.append("\n\nDATABASE SCHEMA:")
     prompt_parts.append(schema)
     
-    # Add examples if provided
+    # Add traditional examples if provided (backward compatibility)
     if examples:
         prompt_parts.append("\n\nEXAMPLES:")
         for i, example in enumerate(examples, 1):
@@ -48,7 +73,13 @@ def create_sql_generation_prompt(question: str, schema: str, examples: List[Dict
     # Add the actual question
     prompt_parts.append("\n\nQUESTION TO CONVERT:")
     prompt_parts.append(f"Question: {question}")
-    prompt_parts.append("SQL:")
+    prompt_parts.append("\nSTEP-BY-STEP APPROACH:")
+    prompt_parts.append("1. Identify entities mentioned → Find matching tables")
+    prompt_parts.append("2. Identify what to return → Determine SELECT columns")
+    prompt_parts.append("3. Identify filters/conditions → Create WHERE clause")
+    prompt_parts.append("4. Check if aggregation needed → Add GROUP BY if 'each/per'")
+    prompt_parts.append("5. Apply patterns above → Follow the rules!")
+    prompt_parts.append("\nSQL:")
     
     return "\n".join(prompt_parts)
 
