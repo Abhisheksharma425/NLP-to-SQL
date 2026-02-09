@@ -195,6 +195,23 @@ DATABASE_URL=sqlite:///./path/to/your/database.db
 - Check if your database schema has clear table/column names
 - Consider adding few-shot examples (future feature)
 
+## Benchmark Evaluation
+
+Test your system on industry-standard datasets like Spider:
+
+```bash
+# Quick test on 50 samples
+python benchmarks/evaluate_spider.py --split dev --max_samples 50
+
+# Full evaluation
+python benchmarks/evaluate_spider.py --split dev
+
+# Test on your own dataset
+python benchmarks/evaluate_custom.py --input benchmarks/example_dataset.json
+```
+
+See [benchmarks/README.md](./benchmarks/README.md) for detailed instructions.
+
 ## Future Enhancements
 
 - [ ] Few-shot example store with dynamic selection
@@ -212,6 +229,7 @@ Expected results based on research:
 - **Complex queries**: 75-85% accuracy
 - **Self-correction success**: 60-70%
 - **Average latency**: 3-8 seconds
+- **Spider dev set**: 70-80% execution accuracy (without few-shot examples)
 
 ## Research Citations
 

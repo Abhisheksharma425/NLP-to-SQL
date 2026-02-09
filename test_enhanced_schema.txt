@@ -1,0 +1,41 @@
+ENHANCED SCHEMA WITH LLM DESCRIPTIONS
+============================================================
+
+CREATE TABLE customers (
+    customer_id INTEGER PRIMARY KEY  -- Unique identifier for each customer (primary key) (e.g., "50", "10", "30", "28", "2"),
+    first_name TEXT NOT NULL  -- Customer's first name (e.g., "David", "Bob", "Charlie", "John", "Jane"),
+    last_name TEXT NOT NULL  -- Customer's last name (e.g., "Wilson", "Davis", "Miller", "Williams", "Johnson"),
+    email TEXT NOT NULL  -- Customer's email address (e.g., "alice.brown49@email.com", "alice.jones9@email.com", "alice.miller29@email.com", "alice.wilson27@email.com", "bob.davis1@email.com"),
+    phone TEXT  -- Customer's phone number (e.g., "555-526-5715", "555-767-5842", "555-207-3670", "555-485-9630", "555-458-2915"),
+    city TEXT  -- Customer's city of residence (e.g., "Chicago", "San Diego", "Los Angeles", "San Antonio", "Houston"),
+    state TEXT  -- Customer's state of residence (e.g., "IL", "CA", "TX", "NY", "AZ"),
+    registration_date DATE NOT NULL  -- Date when the customer registered (e.g., "2024-07-25", "2024-07-13", "2024-07-23", "2024-02-18", "2024-10-04")
+);
+
+CREATE TABLE order_items (
+    order_item_id INTEGER PRIMARY KEY  -- Unique identifier for each order item (e.g., "1", "2", "3", "4", "5"),
+    order_id INTEGER NOT NULL  -- References the associated order in orders table (e.g., "1", "2", "3", "4", "5"),
+    product_id INTEGER NOT NULL  -- References the associated product in products table (e.g., "14", "31", "17", "21", "35"),
+    quantity INTEGER NOT NULL  -- Number of units of the product ordered (e.g., "1", "3", "2"),
+    unit_price DECIMAL(10, 2) NOT NULL  -- Price per unit of the product in dollars (e.g., "484.3", "445.61", "693.03", "870.91", "951.76"),
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE orders (
+    order_id INTEGER PRIMARY KEY  -- Unique identifier for each order (primary key) (e.g., "1", "2", "3", "4", "5"),
+    customer_id INTEGER NOT NULL  -- References unique customer in customers table (e.g., "49", "22", "44", "2", "46"),
+    order_date DATE NOT NULL  -- Date when the order was placed (e.g., "2025-06-08", "2026-02-06", "2025-03-11", "2025-10-07", "2025-09-16"),
+    status TEXT NOT NULL  -- Current status of the order (e.g., shipped) (e.g., "Cancelled", "Shipped", "Completed", "Delivered", "Pending"),
+    total_amount DECIMAL(10, 2) NOT NULL  -- Total cost of the order in dollars (e.g., "7525.25", "201.45", "3386.23", "3772.05", "3163.14"),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+CREATE TABLE products (
+    product_id INTEGER PRIMARY KEY  -- Unique identifier for each product (primary key) (e.g., "1", "2", "3", "4", "5"),
+    product_name TEXT NOT NULL  -- Name of the product (e.g., "Laptop", "Smartphone", "Tablet", "Headphones", "Smart Watch"),
+    category TEXT NOT NULL  -- Product's category or type (e.g., "Electronics", "Clothing", "Books", "Home & Garden", "Sports"),
+    price DECIMAL(10, 2) NOT NULL  -- Product's selling price in dollars (e.g., "649.88", "811.25", "241.63", "624.19", "997.29"),
+    stock_quantity INTEGER NOT NULL  -- Number of units available in stock (e.g., "40", "55", "189", "69", "199"),
+    description TEXT  -- Detailed information about the product (e.g., "High-quality laptop from the Electronics category", "High-quality tablet from the Electronics category")
+);

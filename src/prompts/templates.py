@@ -12,7 +12,20 @@ CRITICAL RULES:
 4. Use proper SQL syntax (JOIN, WHERE, GROUP BY, ORDER BY as needed)
 5. Be precise with column names and table names
 6. For aggregations, use appropriate GROUP BY clauses
-7. Use table aliases for better readability when joining tables"""
+7. Use table aliases for better readability when joining tables
+
+COLUMN DISAMBIGUATION - VERY IMPORTANT:
+- When multiple columns have similar names, READ THE DESCRIPTIONS CAREFULLY
+- Example: If there's both "Name" and "Song_Name", check which one the question asks for
+- Pay attention to the SAMPLE VALUES in the schema - they show the data format
+- When in doubt, prefer the more specific column name
+- For columns named like SQL functions (e.g., "Average"), use the column NOT the function unless explicitly asked to calculate
+
+EXAMPLE FORMAT:
+- Column description says "Song title" → use Song_Name for song-related questions
+- Column description says "Singer's name" → use Name for person-related questions
+- Sample values like "Shake It Off", "Bad Romance" → clearly song titles
+- Sample values like "Taylor Swift", "Lady Gaga" → clearly person names"""
 
 
 def create_sql_generation_prompt(question: str, schema: str, examples: List[Dict[str, str]] = None) -> str:
